@@ -1,0 +1,27 @@
+- hosts: localhost
+  tasks:
+  - name: "installing docker sdk"
+    pip:
+            name: docker
+  - name: "launching ssh enabled container"
+    docker_container:
+            name: "sshcontainer"
+            image: "myssh:v1"
+            state: started
+            interactive: yes
+            detach: yes
+            tty: yes
+  - name: "getting container information"
+    docker_container_info:
+            name: sshcontainer
+    register: X
+  - debug:
+          var: X
+
+  - name: "updating ip on the inventory"
+    blockinfile:
+            path: /root/dock/hostip.txt
+            block: |
+                    [mydock]
+                    {{ X['container']['NetworkSettings']['IPAddress'] }} ansible_ssh_user=root ansible_ssh_pass=docker ansible_connection=ssh
+

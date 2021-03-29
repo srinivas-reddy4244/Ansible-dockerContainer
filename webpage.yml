@@ -1,0 +1,14 @@
+- hosts: mydock
+  tasks:
+  - name: "installing httpd"
+    package:
+           name: "httpd"
+           state: present
+  - name: "copy web page"
+    copy:
+            content: "welcome to world of automation"
+            dest: "/var/www/html/index.html"
+
+  - name: "starting services"
+    command: /usr/sbin/httpd
+
